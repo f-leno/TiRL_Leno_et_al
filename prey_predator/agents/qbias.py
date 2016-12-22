@@ -13,8 +13,8 @@ import actions
 class QBias(QBaseTL):
     bias = None
     
-    def __init__(self, seed=12345,numAg = 3,alpha=0.1,bias=0.0001):        
-        super(QBias, self).__init__(seed=seed,numAg = numAg,alpha=alpha)
+    def __init__(self, seed=12345,numAg = 3,alpha=0.1,sourcePrey=True,bias=0.0001):        
+        super(QBias, self).__init__(seed=seed,numAg = numAg,alpha=alpha,sourcePrey=sourcePrey)
         self.bias = bias   
         
         

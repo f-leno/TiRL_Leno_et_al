@@ -9,14 +9,14 @@ import sys
 
 import csv
 import random
-from environment import PredatorPreyEnvironment
+from environment import PredatorPreyEnvironment,GoldMineEnvironment
 import os
 #from cmac import CMAC
 from graphics_predator_prey import GraphicsPredatorPrey
 
 #from agents.agent import Agent
 
-debugImage = True
+debugImage = False
 graphicHandler = None
 debugEvaluation = [0]        
 
@@ -38,7 +38,7 @@ def get_args():
     parser.add_argument('-de','--depth',type=int, default=2)
     #Modifications in the environment:
     # reward = changes in the reward function
-    parser.add_argument('-m','--modification',choices=['reward','none','negative','transition'], default='none')
+    parser.add_argument('-m','--modification',choices=['reward','none','negative','transition','goldmine'], default='none')
     
 
     return parser.parse_args()
@@ -64,7 +64,10 @@ def build_agents():
                sys.exit(1)
         
         print "Creating agent"
-        AGENT = AgentClass(seed=parameter.seed, numAg = parameter.number_agents)
+        if parameter.modification == 'goldmine' and parameter.type_exp == 'reuseQ':
+            AGENT = AgentClass(seed=parameter.seed, numAg = parameter.number_agents, sourcePrey = False)
+        else:
+            AGENT = AgentClass(seed=parameter.seed, numAg = parameter.number_agents)
         print "OK Agent"
         agents.append(AGENT)
         
@@ -82,8 +85,15 @@ def main():
     #train_csv_file = open(parameter.log_file + "_" + str(AGENT.unum) + "_train", "wb")
     print "Agent Classes OK"
     
+    isGold =  parameter.modification == 'goldmine' and parameter.type_exp != 'reuseQ'
     if debugImage:
-        graphicHandler = GraphicsPredatorPrey(10,10)    
+        graphicHandler = GraphicsPredatorPrey(10,10,not isGold)    
+    
+    #Including name of doman
+    if parameter.modification == 'goldmine':
+        parameter.q_folder += 'gold/'
+    else:
+        parameter.q_folder += 'prey/'
     
     
     #Initiate agent Threads    
@@ -116,7 +126,11 @@ def main():
         else:
             changeTransition = False
         
-        environment = PredatorPreyEnvironment(numberAgents = parameter.number_agents,agents = agents,depth=parameter.depth,
+        if isGold:
+            environment = GoldMineEnvironment(numberAgents = parameter.number_agents,agents = agents,depth=parameter.depth,
+                                              preys=parameter.number_preys, evalEpisodes = parameter.evaluation_duration)
+        else:
+            environment = PredatorPreyEnvironment(numberAgents = parameter.number_agents,agents = agents,depth=parameter.depth,
                                               preys=parameter.number_preys, evalEpisodes = parameter.evaluation_duration, rewardType=rewardType,
                                               invertedAction=invertedAction,changeTransition=changeTransition)    
         
@@ -176,11 +190,12 @@ def main():
 
                         terminal = False
                         #For all steps...
-                        limit = float('inf')
+                        limit = 500
                         while not terminal and eval_step <= limit:
                             eval_step += 1
                             if debugImage and episode in debugEvaluation:
                                 graphicHandler.update_state(environment.preyPositions,environment.agentPositions)
+                                
                             #if episode>200:
                             #   print agents[0].state_importance(environment.get_state(0))
                             state = [None]*len(agents)

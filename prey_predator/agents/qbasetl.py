@@ -13,14 +13,17 @@ import itertools
 import abc
 
 class QBaseTL(QLearning):
-    originalPrey = 1
+    
     transferPrey = 2
     originalPredator = 3
     transferPredator = 4    
     
-    def __init__(self, seed=12345,numAg = 3,alpha=0.1):        
+    def __init__(self, seed=12345,numAg = 3,alpha=0.1,sourcePrey=True):        
         super(QBaseTL, self).__init__(seed=seed,numAg = numAg,alpha=alpha)
-        
+        if sourcePrey:
+            self.originalPrey = 1
+        else:
+            self.originalPrey = 1
     @abc.abstractmethod    
     def initiateFromTL(self,state,action):
         """Reuses Q-values according to the paper description"""

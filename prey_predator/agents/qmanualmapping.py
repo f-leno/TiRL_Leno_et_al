@@ -14,8 +14,8 @@ import abc
 
 class QManualMapping(QBaseTL):
     
-    def __init__(self, seed=12345,numAg = 3,alpha=0.1):        
-        super(QManualMapping, self).__init__(seed=seed,numAg = numAg,alpha=alpha)
+    def __init__(self, seed=12345,numAg = 3,sourcePrey=True,alpha=0.1):        
+        super(QManualMapping, self).__init__(seed=seed,numAg = numAg,alpha=alpha,sourcePrey=sourcePrey)
         
     
     def initiateFromTL(self,state,action):
@@ -24,7 +24,7 @@ class QManualMapping(QBaseTL):
     
     def readQTable(self,state,action):
         """The QValues are composed of the source and target Q values"""
-        if self.activatedTL and state != ('e','n','d'):
+        if self.activatedTL and state != ('e','n','d') and state != tuple('blind'):
            sourceStates = self.translate_state(state)
            qValue = 0
            for st in sourceStates:
@@ -36,6 +36,10 @@ class QManualMapping(QBaseTL):
                    qValue /= count
            qValue += self.qTable.get((state,action),0.0)
            return qValue
+        
+        if state == tuple('blind'):
+            return self.qTable.get((tuple('blind'),action),0.0)
+            
         
         return self.qTable.get((state,action),0.0)
 

@@ -13,8 +13,8 @@ from .qbasetl import QBaseTL
 
 class QAverage(QBaseTL):
     
-    def __init__(self, seed=12345,numAg = 3,alpha=0.1):        
-        super(QAverage, self).__init__(seed=seed,numAg = numAg,alpha=alpha)
+    def __init__(self, seed=12345,numAg = 3,alpha=0.1,sourcePrey=True):        
+        super(QAverage, self).__init__(seed=seed,numAg = numAg,alpha=alpha,sourcePrey=sourcePrey)
         
         
     def initiateFromTL(self,state,action):

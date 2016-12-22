@@ -22,7 +22,7 @@ class GraphicsPredatorPrey():
     sizeY = None
     
     
-    def __init__(self,sizeX,sizeY):
+    def __init__(self,sizeX,sizeY,preyPredator=True):
         """Initiate the Screen"""
         self.window = Tkinter.Tk()
         self.canvas = Tkinter.Canvas(self.window,width=self.width, height=self.height)
@@ -33,11 +33,17 @@ class GraphicsPredatorPrey():
         self.squareX = self.width / sizeX
         self.squareY = self.height / sizeY
         
-        image = Image.open(self.imageFolder + "/predator.png")
+        if preyPredator:
+            image = Image.open(self.imageFolder + "/predator.png")
+        else:
+            image = Image.open(self.imageFolder + "/miner.png")
         image = image.resize((self.squareX, self.squareY), Image.ANTIALIAS)
         self.predator = ImageTk.PhotoImage(image)
         
-        image = Image.open(self.imageFolder +  "/prey.png")
+        if preyPredator:
+            image = Image.open(self.imageFolder +  "/prey.png")
+        else:
+            image = Image.open(self.imageFolder +  "/gold.png")
         image = image.resize((self.squareX, self.squareY), Image.ANTIALIAS)
         self.prey = ImageTk.PhotoImage(image)
         
@@ -87,10 +93,10 @@ class GraphicsPredatorPrey():
     def close(self):
         self.window.destroy()
         
-r = GraphicsPredatorPrey(10,10)
-r.update_state([[1,1],[2,2]],[[2,1],[1,5]])
-r.update_state([[5,5],[6,6]],[[7,9],[10,10]])
-r.close()
+#r = GraphicsPredatorPrey(10,10)
+#r.update_state([[1,1],[2,2]],[[2,1],[1,5]])
+#r.update_state([[5,5],[6,6]],[[7,9],[10,10]])
+#r.close()
   
     #update_prey(self,preyPosic):
         

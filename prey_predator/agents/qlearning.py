@@ -16,20 +16,27 @@ import actions
 
 class QLearning(Agent):
     
-    
+    stateActionTrace = None
     
     alpha = None
+    decayRate = None
+    
+    epsilon = None
+    epsilonDecay = None
     
     functions = None
     policy = None
     friends = None
     
 
-    def __init__(self, seed=12345,numAg = 3,alpha=0.1):
+    def __init__(self, seed=12345,numAg = 3,alpha=0.1,decayRate=0.9,initialEpsilon=0.5,epsilonDecay=0.999):
         
         self.functions = Agent_Utilities()
-        
+        self.stateActionTrace = {}
         self.alpha = alpha
+        self.epsilon = initialEpsilon
+        self.epsilonDecay = epsilonDecay
+        self.decayRate = 0.9
         super(QLearning, self).__init__(seed=seed,numAg = numAg)
         
         
@@ -46,7 +53,7 @@ class QLearning(Agent):
     def select_action(self, state,agentIndex):
         """ When this method is called, the agent executes an action. """
         
-        if self.blind_state(state):        
+        if state == tuple('blind'):
             return random.choice(self.getPossibleActions())
         #Computes the best action for each agent        
         if self.exploring:
@@ -56,12 +63,7 @@ class QLearning(Agent):
             action = self.policy_check(state)
         
         return action
-    def blind_state(self,state):
-        """Returns if the agent can see anything"""
-        for i in range(len(state)):
-            if state[i] != float('inf'):
-                return False
-        return True
+
         
         
     def policy_check(self,state):
@@ -114,7 +116,8 @@ class QLearning(Agent):
             return allActions[i]
         else:
             prob = random.random()
-            if prob <= 0.1:
+            if prob <= self.epsilon:
+                self.stateActionTrace = {}
                 return random.choice(allActions)
             return self.max_Q_action(state)
            
@@ -132,7 +135,37 @@ class QLearning(Agent):
             V = self.get_max_Q_value(statePrime)        
             newQ = qValue + self.alpha * (reward + self.gamma * V - qValue)
             self.qTable[(state,action)] = newQ
+            if self.environment.is_terminal_state():
+                self.epsilon = self.epsilon * self.epsilonDecay
+                  
         
+        
+        
+        
+#        if self.exploring:   
+#            qValue= self.readQTable(state,action)
+#            V = self.get_max_Q_value(statePrime)        
+#            TDError = reward + self.gamma * V - qValue
+#            self.stateActionTrace[(state, action)] = self.stateActionTrace.get((state, action), 0) + 1            
+#            for stateAction in self.stateActionTrace:
+#                # update update ALL Q values and eligibility trace values
+#                newQ = qValue + self.alpha * TDError * self.stateActionTrace.get(stateAction, 0)
+#                self.qTable[stateAction] = newQ
+#                # update eligibility trace Function for state and action
+#                self.stateActionTrace[stateAction] = self.gamma * self.decayRate * self.stateActionTrace.get(stateAction, 0)
+#            if self.environment.is_terminal_state():
+#                    self.stateActionTrace = {} 
+#                    self.epsilon = self.epsilon #* self.epsilonDecay
+
+            
+            
+           
+#        if self.exploring:
+#            qValue= self.readQTable(state,action)
+#            V = self.get_max_Q_value(statePrime)        
+#            newQ = qValue + self.alpha * (reward + self.gamma * V - qValue)
+#            self.qTable[(state,action)] = newQ
+#        
         
     
     def getPossibleActions(self):
