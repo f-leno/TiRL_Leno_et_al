@@ -18,7 +18,7 @@ from graphics_predator_prey import GraphicsPredatorPrey
 
 debugImage = False
 graphicHandler = None
-debugEvaluation = [0]        
+debugEvaluation = [0,1,2]        
 
 
 def get_args():
@@ -30,8 +30,8 @@ def get_args():
     parser.add_argument('-i','--evaluation_interval',type=int, default=10)
     parser.add_argument('-d','--evaluation_duration',type=int, default=100)
     parser.add_argument('-s','--seed',type=int, default=12345)
-    parser.add_argument('-l','--log_file',default='/home/leno/gitProjects/TiRL_Leno_et_al/log/')
-    parser.add_argument('-q','--q_folder',default='/home/leno/gitProjects/TiRL_Leno_et_al/qtables/')
+    parser.add_argument('-l','--log_file',default='../log/')
+    parser.add_argument('-q','--q_folder',default='../qtables/')
     parser.add_argument('-et','--end_trials',type=int, default=1000)
     parser.add_argument('-it','--initial_trial',type=int, default=1)
     parser.add_argument('-te','--type_exp',choices=['saveQ','reuseQ','none'], default='none')
@@ -59,7 +59,8 @@ def build_agents():
                __import__('agents.' + (agentName).lower(),
                           fromlist=[agentName]),
                           agentName)
-        except ImportError:
+        except ImportError as error:
+               print error
                sys.stderr.write("ERROR: missing python module: " +agentName + "\n")
                sys.exit(1)
         
@@ -279,138 +280,6 @@ def main():
     
     
     
-    
-    
-    
-    #agentThreads = []
-#    random.seed(parameter.seed)
-#    #try:
-#        #Initiating agent
-#    agentRefs = [] 
-#    agentThreads = []
-#    for i in range(parameter.number_agents):
-#            agentRefs.append(agent.getAgRef(i))
-#            
-#    for i in range(parameter.number_agents):
-#        agentThreads.append(Thread(target = thread_agent, args=(agentRefs[i],agentRefs,i,parameter)))
-#        agentThreads[i].start()
-#        sleep(3)
-#        
-#    for i in range(parameter.number_agents):
-#        agentThreads[i].join()
-#            
-#            
-#    #except Exception as e:
-#    #    print e.__doc__
-#    #    print e.message
-#    #    okThread = False
-#   
-#    
-#
-#    
-#
-#    
-#    
-#def thread_agent(agentObj,allAgents,agentIndex,mainParameters):
-#    """This method is executed by each thread in the system and corresponds to the control
-#    of one playing agent"""
-#    
-#    logFolder = mainParameters.log_file + getattr(mainParameters,"agent")+"/_0_"+str(mainParameters.number_trial)+"_AGENT_"+str(agentIndex+1)+"_RESULTS"
-#    
-#    #Connecting agent to server 
-#    print "******Connecting agent "+str(agentIndex)+"****"
-#    agentObj.connectHFO()
-#    #Building Log folder name
-#    print "******Connected agent "+str(agentIndex)+"****"
-#    
-#    print logFolder + "********" 
-#    train_csv_file = open(logFolder + "_train", "wb")
-#    train_csv_writer = csv.writer(train_csv_file)
-#    train_csv_writer.writerow(("trial","frames_trial","goals_trial","used_budget"))
-#    train_csv_file.flush()
-#    print('***** %s: Setting up eval log files' % str(agentIndex))
-#    #eval_csv_file = open(parameter.log_file + "_" + str(AGENT.unum) + "_eval", "wb")
-#    eval_csv_file = open(logFolder + "_eval", "wb")
-#    eval_csv_writer = csv.writer(eval_csv_file)
-#    eval_csv_writer.writerow(("trial","goal_percentage","avg_goal_time","used_budget"))
-#    eval_csv_file.flush()
-#    
-#    print('***** %s: Start training' % str(agentIndex))
-#    for trial in range(mainParameter.initial_trial,mainParameters.learning_trials+1):
-#        # perform an evaluation trial
-#        if(trial % mainParameters.evaluation_interval == 0):
-#            #print('***** %s: Running evaluation trials' % str(AGENT.unum) )
-#            agentObj.set_exploring(False)
-#            goals = 0.0
-#            time_to_goal = 0.0
-#            for eval_trials in range(1,mainParameters.evaluation_duration+1):
-#                eval_frame = 0
-#                eval_status = agentObj.IN_GAME
-#                while eval_status == agentObj.IN_GAME:
-#                    eval_frame += 1
-#                    #print "****First Action****"
-#                    agentObj.applyAction()
-#                    #print "****First STEP****"
-#                    eval_status, statePrime = agentObj.step()
-#                    if(eval_status == agentObj.GOAL):
-#                        goals += 1.0
-#                        time_to_goal += eval_frame
-#                        #print('********** %s: GGGGOOOOOOOOOOLLLL: %s in %s' % (str(AGENT.unum), str(goals), str(time_to_goal)))
-#            goal_percentage = 100*goals/mainParameters.evaluation_duration
-#            #print('***** %s: Goal Percentage: %s' % (str(AGENT.unum), str(goal_percentage)))
-#            if (goals != 0):
-#                avg_goal_time = time_to_goal/goals
-#            else:
-#                avg_goal_time = 0.0
-#            #print('***** %s: Average Time to Goal: %s' % (str(AGENT.unum), str(avg_goal_time)))
-#            # save stuff
-#            #print "****Finished****"
-#            eval_csv_writer.writerow((trial,"{:.2f}".format(goal_percentage),"{:.2f}".format(avg_goal_time),str(agentObj.get_Q_size())))
-#            eval_csv_file.flush()
-#            agentObj.set_exploring(True)
-#            # reset agent trace
-#            
-#           
-#        
-#        #print('***** %s: Starting Learning Trial %d' % (str(AGENT.unum),trial))
-#        status = agentObj.IN_GAME
-#        frame = 0
-#        while status == agentObj.IN_GAME:
-#            frame += 1
-#            state = agentObj.get_discretized_state()
-#            #print "****First Action****"
-#            action = agentObj.applyAction()
-#            #print "****First STEP****"
-#            status, statePrime = agentObj.step()
-#            #print "****First REWARD****"
-#            reward = agentObj.get_reward(status)
-#            #print "****Observe REWARD****"
-#            if reward==1: #positive reward
-#                statePrime = ("GOAL")
-#            agentObj.observe_reward(state,action,statePrime,reward)
-#        #print('***** %s: Trial ended with %s'% (str(AGENT.unum), AGENT.hfo.statusToString(status)))
-#        #print('***** %s: Agent --> %s'% (str(AGENT.unum), str(AGENT)))
-#        #print "****Finished****"
-#        # save stuff
-#        train_csv_writer.writerow((trial,frame,reward,str(agentObj.get_Q_size())))
-#        train_csv_file.flush()
-#        #agentObj.stateActionTrace = {}
-#
-#
-#
-#        # Quit if the server goes down
-#        if status == agentObj.SERVER_DOWN:
-#            #agentObj.hfo.act(QUIT)
-#            agentObj.quit()
-#            print('***** %s: Shutting down agent' % str(agentIndex))
-#            break
-#    print('***** %s: Agent --> %s'% (str(agentIndex), str(agentObj)))
-#    eval_csv_file.close()
-#    train_csv_writer.writerow(("-","-",str(agentObj)))
-#    train_csv_file.flush()
-#    train_csv_file.close()
-#    agentObj.quit()
-#    agentObj.finish_training()
 
 if __name__ == '__main__':
     main()

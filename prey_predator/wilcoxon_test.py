@@ -9,7 +9,7 @@ import csv
 import numpy as np
 
 
-def wilcoxon_test(exp1Dir,exp2Dir,significance=95.0,exp1Name='Alg. 1',exp2Name='Alg. 2'):
+def wilcoxon_test(exp1Dir,exp2Dir,significance=99.0,exp1Name='Alg. 1',exp2Name='Alg. 2'):
     """Opens the summary  files in two given folder and compares the significance of the experiment
     for the two algorithms. The differences greater than a given significance will be printed"""
     print "---Wilcoxon Test---- "+exp1Name+", "+exp2Name + " - Sig. "+str(significance)
@@ -51,7 +51,7 @@ def wilcoxon_test(exp1Dir,exp2Dir,significance=95.0,exp1Name='Alg. 1',exp2Name='
     
 if __name__ == '__main__':
     #exp1Dir = "/home/leno/Dropbox/DO - Felipe Leno da Silva/Artigos/NovoArtigo/Data/AdHocTDLoading/"
-    exp1Dir = "/home/leno/gitProjects/DOO-Q_extension/log/DOOQ/"
-    exp2Dir = "/home/leno/gitProjects/DOO-Q_extension/log/DQL/"
+    exp1Dir = "/home/leno/gitProjects/TiRL_Leno_et_al/log/QBias-2-reuseQ-goldmine/"
+    exp2Dir = "/home/leno/gitProjects/TiRL_Leno_et_al/log/QAverage-2-reuseQ-goldmine/"
     #exp2Dir = "/home/leno/Dropbox/DO - Felipe Leno da Silva/Artigos/NovoArtigo/Data/AdHocVisit/" 
-    wilcoxon_test(exp1Dir,exp2Dir,95,"EpisodeSharing","SARSA")
+    wilcoxon_test(exp1Dir,exp2Dir,95,"Bias","Average")

@@ -1,0 +1,3 @@
+-m none -it 101 -a=QBias -et=101 -te=reuseQ -n=4 -p=2 -de=4 -t 4500
+
+-m none -it 1 -a=QLearning -et=15 -te=saveQ -n=3 -p=1 -de=3 -t 2500

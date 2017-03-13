@@ -32,8 +32,8 @@ class QManualMapping(QBaseTL):
                if (st,action) in self.storedQTable:
                    count = count + 1
                    qValue += self.storedQTable[(st,action)]
-               if count>0:
-                   qValue /= count
+           if count>0:
+               qValue /= count
            qValue += self.qTable.get((state,action),0.0)
            return qValue
         

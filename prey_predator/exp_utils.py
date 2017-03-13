@@ -210,7 +210,7 @@ def draw_graph(source1 = None, name1 = "Algo1", significant1=None,
                source6 = None, name6 = "Algo5",significant6=None,
                what = "__SUMMARY_goalpercentages", ci = True,
                #Parameters introduced to allow plot control
-               xMin = None, xMax = None, yMin=None, yMax=None
+               xMin = None, xMax = None, yMin=None, yMax=None, nCol=1, bigCaption=False
                ):
     plt.figure(figsize=(20,6), dpi=300)
     if source1 != None:
@@ -322,26 +322,31 @@ def draw_graph(source1 = None, name1 = "Algo1", significant1=None,
             plt.ylim([yMin,yMax])
         if not xMin is None:
             plt.xlim([xMin,xMax])
-
+    if bigCaption:
+        capSize = 40
+        legSize = 36
+    else:
+        capSize = 20
+        legSize = 18
     if what == "__SUMMARY_goalpercentages":
         #plt.title('Goal Percentage per Trial')
-        plt.ylabel('Goal %', fontsize=20, fontweight='bold')
+        plt.ylabel('Goal %', fontsize=capSize, fontweight='bold')
     elif what == "__SUMMARY_goaltimes":
         #plt.title('Average Frames to Goal per Trial')
-        plt.ylabel('Time to Goal', fontsize=20, fontweight='bold')
+        plt.ylabel('Time to Goal', fontsize=capSize, fontweight='bold')
     elif what == "__SUMMARY_budgets":
         #plt.title('Used Budget per Trial')
-        plt.ylabel('Q-table Entries', fontsize=20, fontweight='bold')
+        plt.ylabel('Q-table Entries', fontsize=capSize, fontweight='bold')
     elif what == "__SUMMARY_stepscaptured":
         #plt.title('Used Budget per Trial')
-        plt.ylabel('Steps until captured', fontsize=20, fontweight='bold')
+        plt.ylabel('Steps until captured', fontsize=capSize, fontweight='bold')
     else:
         #plt.title('Unknown')
         plt.ylabel('Unknown')
 
-    plt.xlabel('Training Episodes', fontsize=20, fontweight='bold')
-    plt.legend(loc='best',prop={'size':18, 'weight':'bold'})#,ncol=5)
-    plt.tick_params(axis='both', which='major', labelsize=18)
+    plt.xlabel('Training Episodes', fontsize=capSize, fontweight='bold')
+    plt.legend(loc='best',prop={'size':legSize, 'weight':'bold'},ncol=nCol)
+    plt.tick_params(axis='both', which='major', labelsize=legSize)
     plt.show()
 
 
