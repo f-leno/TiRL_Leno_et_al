@@ -104,7 +104,7 @@ class GridWorld(object):
                 agentIndex = 0
                 while not self.caught[preyIndex] and agentIndex < self.numberAgents:
                     if(preyP[0] == self.agentPositions[agentIndex][0] and
-                    preyP[1] == self.agentPositions[agentIndex][1]):
+                      preyP[1] == self.agentPositions[agentIndex][1]):
                        if self.preyDomain:
                            for i in range(self.numberAgents):        
                                self.reward[i] += self.capturedReward
