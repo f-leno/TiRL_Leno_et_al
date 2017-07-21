@@ -35,7 +35,8 @@ class QAverage(QBaseTL):
         """Calculates the QValue to be added in the new Q-table (QAverage)"""
         q = 0.0      
         for sState in sourceStates:
-            q = q + self.storedQTable[0][(sState[0],action)] * sState[1]/ totalSim
+            if (sState[0],action) in self.storedQTable[0]:
+                q = q + self.storedQTable[0][(sState[0],action)] * sState[1]/ totalSim
         #if len(sourceStates)>0:
         #    q = q/len(sourceStates)
             

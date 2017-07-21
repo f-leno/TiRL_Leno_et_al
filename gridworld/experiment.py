@@ -1,8 +1,36 @@
 #!/usr/bin/env python
 # encoding: utf-8
+"""
+Instructions to run this program:
+    
+    This program is intended to run the training proccess in a single task, which will be defined by the program
+    arguments (See argument descriptions in the comment of get_args() function). The regular Q-Learning only 
+    need to be executed in the target task, as no knowledge reuse is applicable:
+        
+        python experiment.py -a QLearning
+        
+    Since the argument "type_exp" will have the standard value 'none', the target task will be executed
+    without knowledge reuse.
+    For reusing knowledge, first the source task must be executed as, for example:
+        
+        python experiment.py -a QAverage -te saveQ
+        
+    By using the argument -te, the source task will be executed and the Q-table will be stored
+    to posterior reuse in the folder specified by --q_folder. If other files need to be stored, the same
+    folder should be used.
+    
+    Then, the target task should be executed as:
+        
+        python experiment.py -a QAverage -te reuseQ
+        
+    The "reuseQ" flag means that the saved Q-Table is loaded and reused in the new task.
+    New Learning algorithms should be implemented by extending the Agent abstract class (agents folder).
+    New Environments should be implemented similarly to GridWorldEnvironment.
+    
+    All experiment results will be stored in the --log_folder, and can be interpreted by using the notebook file
+    present in this folder.
+"""
 
-# Before running this program, first Start HFO server:
-# $> ./bin/HFO --offense-agents 1
 
 import argparse
 import sys
@@ -24,13 +52,31 @@ debugEvaluation = [0,1,2]
 
 
 def get_args():
+    """
+        Arguments to control the experiment Execution:
+            --task_path: Path for the source and target task files. Those files should be named source.task and target.task.
+            --algorithm: Learning algorithm. Usually a subclass of Agent (in "agent" folder).
+            --learning_trials: How many learning steps or episodes (depends on --exp_unit parameter) will be executed.
+            --exp_unit: Should the learning time be counted in episodes or steps?
+            --evaluation_interval: Interval for initiating a new evaluation.
+            --evaluation_duration: Number of evaluation episodes
+            --seed: Initial seed given to the agent
+            --log_folder: Folder to store results
+            --q_folder: Folder to store Q-tables or any other information to be reused by the agent.
+            --initial_trials: Initial trial (experiment repetition)
+            --end_trial: Final trial (experiment repetition)
+            --type_exp: Type of experiment: 
+                                "saveQ" - Executes the source task and stores all needed information.
+                                "reuseQ"- Executes the target task resusing the saved information.
+            --modification: not implemented yet, considers modifications in the source task such as differences in reward function
+    """
     parser = argparse.ArgumentParser()
     #parser.add_argument('-n','--number_agents',type=int, default=3)
     parser.add_argument('-ta','--task_path', default='./tasks/')
     parser.add_argument('-a','--algorithm',  default='Dummy') 
-    parser.add_argument('-t','--learning_trials',type=int, default=15000)
+    parser.add_argument('-t','--learning_trials',type=int, default=4000)
     parser.add_argument('-eu','--exp_unit',choices=['episodes','steps'], default='steps')
-    parser.add_argument('-i','--evaluation_interval',type=int, default=100)
+    parser.add_argument('-i','--evaluation_interval',type=int, default=5)
     parser.add_argument('-d','--evaluation_duration',type=int, default=1)
     parser.add_argument('-s','--seed',type=int, default=12345)
     parser.add_argument('-l','--log_folder',default='./log/')

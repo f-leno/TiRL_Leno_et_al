@@ -3,6 +3,16 @@
 Created on Thu May 26 08:00
 Agent base class for implementation of all algorithm
 this class defines the signature of the methods to interact with the environment
+
+Methods to be implemented:
+    --select_action(state): Returns the action to be executed by the agent.
+    --observe_reward(state,action,statePrime,reward): Method to perform Q-updates or other needed updates
+    
+    --initiateFromTL(state,action): When needed, the algorithm can initiate the Q-table using the previously saved one,
+        for that, this method is called each time a state-action pair that has not a Q-value is visited. The previous
+        Q-table is available through the self.storedQTable[0] attribute. For an example, refer to QAverage class.
+
+
 @author: Felipe Leno
 """
 
