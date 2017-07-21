@@ -1,0 +1,6 @@
+gridworld/log/*
+gridworld/qtables/*
+
+
+!gridworld/log/emptyfile 
+!gridworld/qtables/emptyfile
